@@ -4,12 +4,16 @@
   :license {:name "LGPLv3+"
             :url "http://www.gnu.org/licenses/lgpl.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [org.zeromq/jzmq "3.0.1"]]
+                 [org.zeromq/jzmq "3.1.1-SNAPSHOT"]]
+  :jvm-opts [~(str "-Djava.library.path=/usr/local/lib:" (System/getenv "LD_LIBRARY_PATH"))]
   :codox {:src-dir-uri "http://github.com/zeromq/cljzmq/blob/master"
           :src-linenum-anchor-prefix "L"}
   :profiles
   {:1.3 {:dependencies [[org.clojure/clojure "1.3.0"]]}
-   :1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}}
+   :1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
+   :1.5 {:dependencies [[org.clojure/clojure "1.5.1"]]}
+   :1.6 {:dependencies [[org.clojure/clojure "1.6.0"]]}
+   :1.7 {:dependencies [[org.clojure/clojure "1.7.0-alpha1"]]}}
   :aliases {"all" ["with-profile" "dev:1.3:1.4"]}
   :repositories [["releases" {:url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
                               :username [:gpg :env/NEXUS_USERNAME]

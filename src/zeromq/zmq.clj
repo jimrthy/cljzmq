@@ -1,7 +1,7 @@
 (ns zeromq.zmq
   (:refer-clojure :exclude [send])
   (:import
-   [org.zeromq ZContext ZMQ ZMQ$Context ZMQ$Poller ZMQ$Socket ZMQQueue]
+   [org.zeromq ZContext ZCurveKeyPair ZMQ ZMQ$Context ZMQ$Poller ZMQ$Socket ZMQQueue]
    java.nio.ByteBuffer
    java.net.ServerSocket))
 
@@ -195,6 +195,22 @@
         (set-recv-hwm socket size))
     (.setHWM socket size))
   socket)
+
+(defn ^ZCurveKeyPair curve-key-pair
+  []
+  (ZCurveKeyPair/Factory))
+
+(defn ^ZMQ$Socket make-into-curve-server
+  [^ZMQ$Socket socket
+   ^bytes key]
+  (.makeIntoCurveServer socket key)
+  socket)
+
+(defn ^ZMQ$Socket make-into-curve-client
+  [^ZMQ$Socket socket
+   ^ZCurveKeyPair client-keys
+   ^bytes server-private-key]
+  (.makeIntoCurveClient socket client-keys server-private-key))
 
 (defn receive-more?
   "The receive-more? function shall return true if the message part last
