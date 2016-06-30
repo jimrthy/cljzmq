@@ -3,7 +3,7 @@
   :url "https://github.com/zeromq/cljzmq"
   :license {:name "LGPLv3+"
             :url "http://www.gnu.org/licenses/lgpl.html"}
-  :dependencies [[org.clojure/clojure "1.5.1"]
+  :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.zeromq/jzmq "3.1.1-SNAPSHOT"]]
   :jvm-opts [~(str "-Djava.library.path=/usr/local/lib:" (System/getenv "LD_LIBRARY_PATH"))]
   :codox {:src-dir-uri "http://github.com/zeromq/cljzmq/blob/master"
@@ -25,12 +25,11 @@
   :pom-addition [:developers
                  [:developer
                   [:name "Trevor Bernard"]
-                  [:email "trevor@userevents.com"]]
+                  [:email "trevor.bernard@gmail.com"]]
                  [:developer
                   [:name "Josh Comer"]
-                  [:email "josh@userevents.com"]]
+                  [:email "jcomer@liveops.com"]]
                  [:developer
                   [:name "Ian Bishop"]
-                  [:email "ian@userevents.com"]]]
+                  [:email "ibishop@liveops.com"]]]
   :min-lein-version "2.0.0")
-
