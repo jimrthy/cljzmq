@@ -43,40 +43,17 @@
       (let [actual (zmq/receive-str dealer)]
         (is (= "ack" actual))))))
 
-(deftest plain-text-req-rep-test
-  (let [server-key (zmq/curve-key-pair)
-        client-key (zmq/curve-key-pair)]
+(deftest receive-all-send-all-test
+  (let [addr "inproc://rxtx-all-test"]
     (with-open [req (doto (zmq/socket context :req)
-                      (zmq/set-receive-timeout 3000)
-                      (zmq/connect "tcp://127.0.0.1:12352"))
+                      (zmq/bind addr))
                 rep (doto (zmq/socket context :rep)
-                      (zmq/bind "tcp://127.0.0.1:12352"))]
-      (let [success (s/send "payload" req 0)]
-        (is success))
-      (let [[_] (zmq/receive-all rep)]
-        (zmq/send-str rep "ack")
-        (let [actual (zmq/receive-str req)]
-          (is (= "ack" actual)))))))
-
-(deftest encrypted-req-rep-test
-  (let [server-key (zmq/curve-key-pair)
-        client-key (zmq/curve-key-pair)]
-    (with-open [req (doto (zmq/socket context :req)
-                      (zmq/set-receive-timeout 3000)
-                      (zmq/make-into-curve-client
-                       client-key
-                       (.publicKey server-key))
-                      (zmq/connect "tcp://127.0.0.1:12352"))
-                rep (doto (zmq/socket context :rep)
-                      (zmq/make-into-curve-server (.privateKey server-key))
-                      (zmq/bind "tcp://127.0.0.1:12352"))]
-      (println "Sending initial encrypted handshake request")
-      (let [success (zmq/send-str req "payload" 0)]
-        (is success))
-      (println "Waiting for initial encrypted handshake")
-      (let [[_] (zmq/receive-all rep)]
-        (println "Answering encrypted handshake")
-        (zmq/send-str rep "ack")
-        (println "Waiting for response to encrypted handshake")
-        (let [actual (zmq/receive-str req)]
-          (is (= "ack" actual)))))))
+                      (zmq/connect addr))]
+      (zmq/send-all req [(.getBytes "hello") (.getBytes "world")])
+      (let [msg (zmq/receive-all rep)]
+        (is (= (vec (first msg)) (vec (.getBytes "hello"))))
+        (is (= (vec (second msg)) (vec (.getBytes "world"))))
+        )
+      (zmq/send-all rep [(byte-array[])])
+      (let [msg (zmq/receive-all req)]
+        (is (= (vec (first msg)) []))))))
